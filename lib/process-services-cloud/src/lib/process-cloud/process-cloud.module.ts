@@ -23,6 +23,10 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateLoaderService, LogService, StorageService } from '@alfresco/adf-core';
 import { ProcessFilterCloudService } from './services/process-filter-cloud.service';
 import { HttpClientModule } from '@angular/common/http';
+import { StartProcessCloudComponent } from './start-process-cloud/start-process-cloud.component';
+import { ProcessCloudService } from './services/process-cloud.service';
+import { ReactiveFormsModule } from '@angular/forms';
+
 @NgModule({
     imports: [
         HttpClientModule,
@@ -33,11 +37,23 @@ import { HttpClientModule } from '@angular/common/http';
                 useClass: TranslateLoaderService
             }
         }),
-        MaterialModule
+        MaterialModule,
+        ReactiveFormsModule
     ],
-    declarations: [ProcessFiltersCloudComponent],
+    declarations: [
+    	ProcessFiltersCloudComponent,
+    	StartProcessCloudComponent
+    ],
 
-    exports: [ProcessFiltersCloudComponent],
-    providers: [ProcessFilterCloudService, LogService, StorageService]
+    exports: [
+    	ProcessFiltersCloudComponent,
+    	StartProcessCloudComponent
+    ],
+    providers: [
+    	ProcessFilterCloudService
+        ProcessCloudService,
+        LogService,
+        StorageService
+    ]
 })
 export class ProcessCloudModule { }
