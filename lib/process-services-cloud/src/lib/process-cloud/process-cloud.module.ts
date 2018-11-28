@@ -41,16 +41,16 @@ import { ReactiveFormsModule } from '@angular/forms';
         ReactiveFormsModule
     ],
     declarations: [
-    	ProcessFiltersCloudComponent,
-    	StartProcessCloudComponent
+        ProcessFiltersCloudComponent,
+        StartProcessCloudComponent
     ],
 
     exports: [
-    	ProcessFiltersCloudComponent,
-    	StartProcessCloudComponent
+        ProcessFiltersCloudComponent,
+        StartProcessCloudComponent
     ],
     providers: [
-    	ProcessFilterCloudService
+        ProcessFilterCloudService,
         ProcessCloudService,
         LogService,
         StorageService
