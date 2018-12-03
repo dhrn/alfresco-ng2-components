@@ -88,9 +88,9 @@ describe('Search component - Search Bar', () => {
         let firstFileUploaded = await uploadActions.uploadFile(this.alfrescoJsApi, firstFileModel.location, firstFileModel.name, '-my-');
         Object.assign(firstFileModel, firstFileUploaded.entry);
 
-        filesToDelete.push(await uploadActions.uploadFolder(this.alfrescoJsApi, firstFolderModel.name, '-my-'));
-        filesToDelete.push(await uploadActions.uploadFolder(this.alfrescoJsApi, secondFolder.name, '-my-'));
-        filesToDelete.push(await uploadActions.uploadFolder(this.alfrescoJsApi, thirdFolder.name, '-my-'));
+        filesToDelete.push(await uploadActions.createFolder(this.alfrescoJsApi, firstFolderModel.name, '-my-'));
+        filesToDelete.push(await uploadActions.createFolder(this.alfrescoJsApi, secondFolder.name, '-my-'));
+        filesToDelete.push(await uploadActions.createFolder(this.alfrescoJsApi, thirdFolder.name, '-my-'));
 
         await browser.driver.sleep(15000); // wait search index previous file/folder uploaded
 

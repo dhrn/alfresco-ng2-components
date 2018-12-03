@@ -109,7 +109,7 @@ describe('Login component - Redirect', () => {
         loginPage.login(user.id, user.password);
 
         browser.controlFlow().execute(async () => {
-            uploadedFolder = await uploadActions.uploadFolder(this.alfrescoJsApi, folderName, '-my-');
+            uploadedFolder = await uploadActions.createFolder(this.alfrescoJsApi, folderName, '-my-');
 
             navigationBarPage.openContentServicesFolder(uploadedFolder.entry.id);
 

@@ -60,13 +60,102 @@ export class ContentServicesPage {
     searchInputElement = element(by.css('input[data-automation-id="content-node-selector-search-input"'));
     shareNodeButton = element(by.cssContainingText('mat-icon', ' share '));
 
-    getElementsDisplayed() {
+    async getNodesDisplayed(alfrescoJsApi) {
+
+        let promises = [];
+        let nodeList;
+
+        let idList = await this.getElementsDisplayedId();
+        let numberOfElements = await this.numberOfResultsDisplayed();
+        for (let i = 0; i < (numberOfElements - 1) ; i++ ) {
+            promises.push(alfrescoJsApi.core.nodesApi.getNode(idList[i]));
+        }
+        nodeList = await Promise.all(promises);
+        return nodeList;
+    }
+
+    getElementsDisplayedCreated() {
+        let deferred = protractor.promise.defer();
+        let fileNameLocator = by.css("div[id*='document-list-container'] div[class*='adf-datatable-row'] div[title='Created'] span");
+        Util.waitUntilElementIsVisible(element.all(fileNameLocator).first());
+        let initialList = [];
+
+        element.all(fileNameLocator).each((item) => {
+            item.getAttribute('title').then((dateText) => {
+                if (dateText !== '') {
+                    let date = new Date(dateText);
+                    initialList.push(date);
+                }
+            });
+        }).then(function () {
+            deferred.fulfill(initialList);
+        });
+
+        return deferred.promise;
+    }
+
+    getElementsDisplayedSize() {
+        let deferred = protractor.promise.defer();
+        let fileNameLocator = by.css("div[id*='document-list-container'] div[class*='adf-datatable-row'] div[title='Size'] span");
+        Util.waitUntilElementIsVisible(element.all(fileNameLocator).first());
+        let initialList = [];
+
+        element.all(fileNameLocator).each(function (item) {
+            item.getAttribute('title').then((sizeText) => {
+                if (sizeText !== '') {
+                    let size = Number(sizeText);
+                    initialList.push(size);
+                }
+            });
+        }).then(function () {
+            deferred.fulfill(initialList);
+        });
+
+        return deferred.promise;
+    }
+
+    getElementsDisplayedAuthor(alfrescoJsApi) {
+        let deferred = protractor.promise.defer();
+        this.getNodesDisplayed(alfrescoJsApi).then((nodes) => {
+            let initialList = [];
+
+            nodes.forEach((item) => {
+                if (item.entry.createdByUser.id !== '') {
+                    initialList.push(item.entry.createdByUser.id);
+                }
+            });
+            deferred.fulfill(initialList);
+        });
+
+        return deferred.promise;
+    }
+
+    getElementsDisplayedName() {
         let deferred = protractor.promise.defer();
         let fileNameLocator = by.css("div[id*='document-list-container'] div[class*='adf-datatable-row'] div[title='Display name'] span[class='adf-datatable-cell-value']");
         Util.waitUntilElementIsVisible(element.all(fileNameLocator).first());
         let initialList = [];
 
-        element.all(fileNameLocator).each(function (item) {
+        element.all(fileNameLocator).each((item) => {
+            item.getText().then(function (name) {
+                if (name !== '') {
+                    initialList.push(name);
+                }
+            });
+        }).then(function () {
+            deferred.fulfill(initialList);
+        });
+
+        return deferred.promise;
+    }
+
+    getElementsDisplayedId() {
+        let deferred = protractor.promise.defer();
+        let fileNameLocator = by.css("div[id*='document-list-container'] div[class*='adf-datatable-row'] div[title='Node id'] span[class='adf-datatable-cell-value']");
+        Util.waitUntilElementIsVisible(element.all(fileNameLocator).first());
+        let initialList = [];
+
+        element.all(fileNameLocator).each((item) => {
             item.getText().then(function (text) {
                 if (text !== '') {
                     initialList.push(text);
@@ -79,24 +168,28 @@ export class ContentServicesPage {
         return deferred.promise;
     }
 
-    checkElementsSortedByNameAsc(elements) {
-        browser.controlFlow().execute(async () => {
-            let numberOfElements = await this.numberOfResultsDisplayed();
-            for (let i = 0; i < (numberOfElements - 1) ; i++ ) {
-                expect(JSON.stringify(elements[i]) <= JSON.stringify(elements[i + 1])).toEqual(true);
+    checkElementsSortedAsc(elements) {
+        let sorted = true;
+        let i = 0;
+        while (elements.length > 1 && sorted === true && i < (elements.length - 1)) {
+            if (JSON.stringify(elements[i]) > JSON.stringify(elements[i + 1])) {
+                sorted = false;
             }
-        });
-        return this;
+            i++;
+        }
+        return sorted;
     }
 
-    checkElementsSortedByNameDesc(elements) {
-        browser.controlFlow().execute(async () => {
-            let numberOfElements = await this.numberOfResultsDisplayed();
-            for (let i = 0; i < (numberOfElements - 1) ; i++ ) {
-                expect(JSON.stringify(elements[i]) >= JSON.stringify(elements[i + 1])).toEqual(true);
+    checkElementsSortedDesc(elements) {
+        let sorted = true;
+        let i = 0;
+        while (elements.length > 1 && sorted === true && i < (elements.length - 1)) {
+            if (elements[i] < elements[i + 1]) {
+                sorted = false;
             }
-        });
-        return this;
+            i++;
+        }
+        return sorted;
     }
 
     getContentList() {

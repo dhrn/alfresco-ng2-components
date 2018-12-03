@@ -85,8 +85,8 @@ describe('Search component - Search Page', () => {
 
         await this.alfrescoJsApi.login(acsUser.id, acsUser.password);
 
-        await uploadActions.uploadFolder(this.alfrescoJsApi, emptyFolderModel.name, '-my-');
-        let newFolderModelUploaded = await uploadActions.uploadFolder(this.alfrescoJsApi, newFolderModel.name, '-my-');
+        await uploadActions.createFolder(this.alfrescoJsApi, emptyFolderModel.name, '-my-');
+        let newFolderModelUploaded = await uploadActions.createFolder(this.alfrescoJsApi, newFolderModel.name, '-my-');
 
         await uploadActions.createEmptyFiles(this.alfrescoJsApi, fileNames, newFolderModelUploaded.entry.id);
 

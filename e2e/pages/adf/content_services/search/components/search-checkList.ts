@@ -63,16 +63,16 @@ export class SearchCheckListPage {
     }
 
     checkSearchFilterInputIsDisplayed() {
-        Util.waitUntilElementIsVisible(this.filter.element(this.inputBy));
+        Util.waitUntilElementIsVisible(this.filter.all(this.inputBy).first());
     }
 
     searchInFilter(option) {
-        let inputElement = this.filter.element(this.inputBy);
+        let inputElement = this.filter.all(this.inputBy).first();
         Util.waitUntilElementIsClickable(this.filter);
         Util.waitUntilElementIsClickable(inputElement);
 
         inputElement.clear();
-        this.filter.element(this.inputBy).sendKeys(option);
+        this.filter.all(this.inputBy).first().sendKeys(option);
     }
 
     checkShowLessButtonIsNotDisplayed() {

@@ -18,7 +18,9 @@
 import Util = require('../../util/util');
 import ContentList = require('./dialog/contentList');
 import DatatablePage = require('./dataTablePage');
-import { element, by, protractor, browser } from 'protractor';
+import { SearchSortingPickerPage } from './content_services/search/components/search-sortingPicker.page';
+import { element, by, protractor } from 'protractor';
+import { ContentServicesPage } from './contentServicesPage';
 
 export class SearchResultsPage {
 
@@ -26,8 +28,8 @@ export class SearchResultsPage {
     noResultsMessageBy = by.css('div[class="adf-no-result-message"]');
     contentList = new ContentList();
     dataTable = new DatatablePage();
-    sortArrowLocator = by.css('adf-sorting-picker button mat-icon');
-    sortingArrow = element(by.css('adf-sorting-picker div[class="mat-select-arrow"]'));
+    searchSortingPicker = new SearchSortingPickerPage();
+    contentServices = new ContentServicesPage();
 
     tableIsLoaded() {
         this.contentList.tableIsLoaded();
@@ -80,43 +82,15 @@ export class SearchResultsPage {
     }
 
     sortByName(sortOrder) {
-        this.sortBy(sortOrder, 'Name');
-    }
-
-    sortBy(sortOrder, sortType) {
-        Util.waitUntilElementIsClickable(this.sortingArrow);
-        this.sortingArrow.click();
-
-        let selectedSortingOption = element(by.cssContainingText('span[class="mat-option-text"]', sortType));
-        Util.waitUntilElementIsClickable(selectedSortingOption);
-        selectedSortingOption.click();
-
-        this.sortByOrder(sortOrder);
-    }
-
-    sortByOrder(sortOrder) {
-        Util.waitUntilElementIsVisible(element(this.sortArrowLocator));
-        return element(this.sortArrowLocator).getText().then((result) => {
-            if (sortOrder === true) {
-                if (result !== 'arrow_upward') {
-                    browser.executeScript(`document.querySelector('adf-sorting-picker button mat-icon').click();`);
-                }
-            } else {
-                if (result === 'arrow_upward') {
-                    browser.executeScript(`document.querySelector('adf-sorting-picker button mat-icon').click();`);
-                }
-            }
-
-            return Promise.resolve();
-        });
+        this.searchSortingPicker.sortBy(sortOrder, 'Name');
     }
 
     sortByAuthor(sortOrder) {
-        this.sortBy(sortOrder, 'Author');
+        this.searchSortingPicker.sortBy(sortOrder, 'Author');
     }
 
     sortByCreated(sortOrder) {
-        this.sortBy(sortOrder, 'Created');
+        this.searchSortingPicker.sortBy(sortOrder, 'Created');
     }
 
     sortBySize(sortOrder) {
@@ -125,31 +99,91 @@ export class SearchResultsPage {
     }
 
     sortAndCheckListIsOrderedByName(sortOrder) {
+        let deferred = protractor.promise.defer();
         this.sortByName(sortOrder);
         this.dataTable.waitForTableBody();
-        let deferred = protractor.promise.defer();
-        this.contentList.checkListIsOrderedByNameColumn(sortOrder).then((result) => {
-            deferred.fulfill(result);
-        });
+        if (sortOrder === true) {
+            this.checkListIsOrderedByNameAsc().then((result) => {
+                deferred.fulfill(result);
+            });
+        } else {
+            this.checkListIsOrderedByNameDesc().then((result) => {
+                deferred.fulfill(result);
+            });
+        }
         return deferred.promise;
     }
 
-    sortAndCheckListIsOrderedByAuthor(sortOrder) {
-        this.sortByAuthor(sortOrder);
+    async checkListIsOrderedByNameAsc() {
+        let list = await this.contentServices.getElementsDisplayedName();
+        return this.contentServices.checkElementsSortedAsc(list);
+    }
+
+    async checkListIsOrderedByNameDesc() {
+        let list = await this.contentServices.getElementsDisplayedName();
+        return this.contentServices.checkElementsSortedDesc(list);
+    }
+
+    sortAndCheckListIsOrderedByAuthor(alfrescoJsApi, sortOrder) {
         let deferred = protractor.promise.defer();
-        this.contentList.checkListIsOrderedByAuthorColumn(sortOrder).then((result) => {
-            deferred.fulfill(result);
-        });
+        this.sortByAuthor(sortOrder);
+        this.dataTable.waitForTableBody();
+        if (sortOrder === true) {
+            this.checkListIsOrderedByAuthorAsc(alfrescoJsApi).then((result) => {
+                deferred.fulfill(result);
+            });
+        } else {
+            this.checkListIsOrderedByAuthorDesc(alfrescoJsApi).then((result) => {
+                deferred.fulfill(result);
+            });
+        }
         return deferred.promise;
+    }
+
+    async checkListIsOrderedByAuthorAsc(alfrescoJsApi) {
+        let list = await this.contentServices.getElementsDisplayedAuthor(alfrescoJsApi);
+        return this.contentServices.checkElementsSortedAsc(list);
+    }
+
+    async checkListIsOrderedByAuthorDesc(alfrescoJsApi) {
+        let list = await this.contentServices.getElementsDisplayedAuthor(alfrescoJsApi);
+        return this.contentServices.checkElementsSortedDesc(list);
     }
 
     sortAndCheckListIsOrderedByCreated(sortOrder) {
-        this.sortByCreated(sortOrder);
         let deferred = protractor.promise.defer();
-        this.contentList.checkListIsOrderedByCreatedColumn(sortOrder).then((result) => {
-            deferred.fulfill(result);
-        });
+        this.sortByCreated(sortOrder);
+        this.dataTable.waitForTableBody();
+        if (sortOrder === true) {
+            this.checkListIsOrderedByCreatedAsc().then((result) => {
+                deferred.fulfill(result);
+            });
+        } else {
+            this.checkListIsOrderedByCreatedDesc().then((result) => {
+                deferred.fulfill(result);
+            });
+        }
         return deferred.promise;
+    }
+
+    async checkListIsOrderedByCreatedAsc() {
+        let list = await this.contentServices.getElementsDisplayedCreated();
+        return this.contentServices.checkElementsSortedAsc(list);
+    }
+
+    async checkListIsOrderedByCreatedDesc() {
+        let list = await this.contentServices.getElementsDisplayedCreated();
+        return this.contentServices.checkElementsSortedDesc(list);
+    }
+
+    async checkListIsOrderedBySizeAsc() {
+        let list = await this.contentServices.getElementsDisplayedSize();
+        return this.contentServices.checkElementsSortedAsc(list);
+    }
+
+    async checkListIsOrderedBySizeDesc() {
+        let list = await this.contentServices.getElementsDisplayedSize();
+        return this.contentServices.checkElementsSortedDesc(list);
     }
 
 }
