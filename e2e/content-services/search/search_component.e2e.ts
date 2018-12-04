@@ -22,6 +22,7 @@ import SearchDialog = require('../../pages/adf/dialog/searchDialog');
 import { ContentServicesPage } from '../../pages/adf/contentServicesPage';
 import filePreviewPage = require('../../pages/adf/filePreviewPage');
 import { SearchResultsPage } from '../../pages/adf/searchResultsPage';
+import { SearchFiltersPage } from '../../pages/adf/searchFiltersPage';
 
 import AcsUserModel = require('../../models/ACS/acsUserModel');
 import FileModel = require('../../models/ACS/fileModel');
@@ -48,6 +49,7 @@ describe('Search component - Search Bar', () => {
     let contentServicesPage = new ContentServicesPage();
     let searchDialog = new SearchDialog();
     let searchResultPage = new SearchResultsPage();
+    const searchFilters = new SearchFiltersPage();
 
     let acsUser = new AcsUserModel();
 
@@ -243,5 +245,12 @@ describe('Search component - Search Bar', () => {
         Util.switchToWindowHandler(0);
 
         searchDialog.checkSearchBarIsNotVisible().checkSearchIconIsVisible();
+    });
+
+    it('[C290137] Should be able to search by \'%\'', () => {
+        searchDialog
+            .clickOnSearchIcon()
+            .enterTextAndPressEnter('%');
+        searchResultPage.tableIsLoaded();
     });
 });
