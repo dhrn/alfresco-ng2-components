@@ -30,12 +30,13 @@ describe('Applications list', () => {
     const appListCloudComponent = new AppListCloudComponent();
     const path = '/auth/realms/springboot';
     const appName = 'task-app';
+    const user = 'superadminuser', password = 'password';
 
     it ('[C289910] Should the app be displayed on dashboard when is deployed on APS', async () => {
 
         await settingsPage.setProviderBpmSso(TestConfig.adf.hostSso, TestConfig.adf.hostSso + path);
         browser.ignoreSynchronization = true;
-        await loginApsPage.loginAPS(TestConfig.adf.adminEmail, TestConfig.adf.adminPassword);
+        await loginApsPage.loginAPS(user, password);
         await navigationBarPage.navigateToProcessServicesCloudPage();
 
         appListCloudComponent.checkApsContainer();
