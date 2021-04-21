@@ -1,0 +1,38 @@
+on:
+  push:
+
+env:
+  NODE_VERSION: '12.x'                # set this to the node version to use
+  SAVE_SCREENSHOT: true
+  REDIRECT_URI: '/'
+  BROWSER_RUN=: true
+  MAXINSTANCES: 2
+  PROXY_HOST_ADF: ${{ secrets.PROXY_HOST_ADF }}
+  HOST_SSO:  ${{ secrets.HOST_SSO }}
+  USERNAME_ADF:  ${{ secrets.USERNAME_ADF }}
+  PASSWORD_ADF:  ${{ secrets.PASSWORD_ADF }}
+  IDENTITY_ADMIN_EMAIL:  ${{ secrets.IDENTITY_ADMIN_EMAIL }}
+  IDENTITY_ADMIN_PASSWORD: ${{ secrets.IDENTITY_ADMIN_PASSWORD }}
+  URL_HOST_ADF: "http://localhost:4200"
+  FOLDER: "content-services/components"
+  PROVIDER: "ECM"
+  AUTH_TYPE: "BASIC"
+
+jobs:
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: npm install, build, and test
+      run: |
+        npm install
+        npm run build:prod --if-present
+    - name: e2e
+      run: |
+        ./scripts/test-e2e-lib.sh
