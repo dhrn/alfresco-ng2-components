@@ -3,7 +3,7 @@ on:
 
 env:
   NODE_VERSION: '12.x'                # set this to the node version to use
-  SAVE_SCREENSHOT: true
+  SAVE_SCREENSHOT: false
   REDIRECT_URI: '/'
   BROWSER_RUN=: true
   MAXINSTANCES: 2
