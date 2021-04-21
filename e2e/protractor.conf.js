@@ -158,6 +158,7 @@ exports.config = {
                 '--disable-web-security',
                 '--disable-browser-side-navigation',
                 '--allow-running-insecure-content',
+                '--disable-dev-shm-usage',
                 ...(BROWSER_RUN === true ? [] : ['--headless'])]
         }
     },
