@@ -45,9 +45,6 @@ jobs:
         npm i -g @angular/cli
         npm install
 
-    - uses: browser-actions/setup-chrome@latest
-    - run: chrome --version
-
     - name: build
       run: |
         npm run build:prod --if-present
