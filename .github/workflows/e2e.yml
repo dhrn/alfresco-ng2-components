@@ -35,4 +35,5 @@ jobs:
         npm run build:prod --if-present
     - name: e2e
       run: |
+        ./scripts/build/build-testing.sh
         ./scripts/test-e2e-lib.sh
