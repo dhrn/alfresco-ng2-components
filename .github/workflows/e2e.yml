@@ -40,6 +40,8 @@ jobs:
     - name: npm install, build, and test
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
+        npm i -g @nrwl/cli
+        npm i -g @angular/cli
         npm install
         npm run build:prod --if-present
     - name: e2e
