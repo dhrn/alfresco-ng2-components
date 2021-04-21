@@ -37,13 +37,17 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-node-
 
-    - name: npm install, build, and test
+    - name: install
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         npm i -g @nrwl/cli
         npm i -g @angular/cli
         npm install
+
+    - name: build
+      run: |
         npm run build:prod --if-present
+  
     - name: e2e
       run: |
         ./scripts/build/build-testing.sh
