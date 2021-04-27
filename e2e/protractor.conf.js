@@ -254,7 +254,14 @@ exports.config = {
         await browser.driver.executeScript(disableCSSAnimation);
 
         // @ts-ignore
+        await browser.waitForAngularEnabled(false);
+        // @ts-ignore
         await browser.get(`${HOST}/#/settings`);
+        // @ts-ignore
+        await browser.waitForAngularEnabled(true);
+        // @ts-ignore
+        await browser.waitForAngular();
+        // @ts-ignore
         await LocalStorageUtil.clearStorage();
         // @ts-ignore
         await LocalStorageUtil.setStorageItem('ecmHost', browser.params.testConfig.appConfig.ecmHost);
