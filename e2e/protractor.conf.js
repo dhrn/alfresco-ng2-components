@@ -257,6 +257,7 @@ exports.config = {
         // @ts-ignore
         await browser.get(`${HOST}/#/settings`);
         await browser.waitForAngularEnabled(true);
+        await browser.waitForAngular();
 
         await LocalStorageUtil.clearStorage();
         // @ts-ignore
