@@ -35,9 +35,12 @@ jobs:
       id: cache
       uses: actions/cache@v2
       with:
-        path: ./node_modules
-        key: modules-${{ hashFiles('package-lock.json') }}
-
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
     - name: install
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
