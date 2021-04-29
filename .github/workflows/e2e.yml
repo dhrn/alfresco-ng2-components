@@ -47,6 +47,7 @@ jobs:
 
     - name: build
       run: |
+        ./scripts/build/build-all-lib.sh
         npm run build:prod --if-present
   
     - name: e2e
